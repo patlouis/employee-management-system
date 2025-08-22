@@ -1,9 +1,9 @@
-## Employee Management System
+# Employee Management System
 
 A full-stack web application for managing employees, roles, and organizational workflows. Designed to streamline HR operations, 
 enhance productivity, and provide actionable insights.
 
-#### Tech Stack
+### Tech Stack
 <p>
   <img alt="Javascript" src="https://img.shields.io/badge/-javascript-f7df1c?style=flat-square&logo=javascript&logoColor=black" />
   <img alt="Nodejs" src="https://img.shields.io/badge/-Nodejs-43853d?style=flat-square&logo=Node.js&logoColor=white" />
