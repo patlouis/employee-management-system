@@ -1,4 +1,4 @@
-### Employee Management System
+## Employee Management System
 
 A full-stack web application for managing employees, roles, and organizational workflows. Designed to streamline HR operations, 
 enhance productivity, and provide actionable insights.
