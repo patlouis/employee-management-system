@@ -40,7 +40,7 @@ export default function Register() {
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          Admin Registration
+          Register
         </h2>
         {message && (
           <div
@@ -101,14 +101,14 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 cursor-pointer"
+            className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900 transition disabled:opacity-50 cursor-pointer"
           >
             {loading ? "Registering..." : "Register"}
           </button>
         </form>
         <p className="mt-4 text-sm text-center text-gray-600">
           Already have an account?{" "}
-          <Link to="/" className="text-blue-600 hover:underline">
+          <Link to="/" className="text-gray-900 hover:underline">
             Login
           </Link>
         </p>
