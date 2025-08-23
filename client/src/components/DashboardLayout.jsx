@@ -39,7 +39,7 @@ export default function DashboardLayout({ activePage, children }) {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex fixed left-0 top-0 h-screen w-64 flex-col border-r bg-white shadow-sm">
         <div className="px-5 pt-6 pb-4 flex items-center gap-3">
-          <h1 className="text-lg font-semibold">Admin Dashboard</h1>
+          <h1 className="text-lg font-bold">Admin Dashboard</h1>
         </div>
         <nav className="px-3 py-4 space-y-1 overflow-y-auto">
           {navItems.map(({ label, icon: Icon, to }) => (
