@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // ✅ import useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -160,13 +160,13 @@ export default function AdminDashboard() {
         <section className="p-4 md:p-6 space-y-6">
           <div className="grid gap-4 md:grid-cols-3">
             <div className="p-4 bg-white rounded-xl shadow">
-              <h3 className="text-sm font-medium mb-1">Total Users</h3>
+              <h3 className="text-sm font-medium mb-1">Total Employees</h3>
               <p className="text-3xl font-semibold">1,284</p>
               <p className="text-xs text-gray-500 mt-1">+4.1% from last week</p>
             </div>
             <div className="p-4 bg-white rounded-xl shadow">
-              <h3 className="text-sm font-medium mb-1">Active Sessions</h3>
-              <p className="text-3xl font-semibold">312</p>
+              <h3 className="text-sm font-medium mb-1">Total Departments</h3>
+              <p className="text-3xl font-semibold">41</p>
               <p className="text-xs text-gray-500 mt-1">-2.3% today</p>
             </div>
             <div className="p-4 bg-white rounded-xl shadow">
