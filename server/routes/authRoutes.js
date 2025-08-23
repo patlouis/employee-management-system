@@ -14,7 +14,7 @@ router.post("/register", async (req, res) => {
 
   try {
     const db = await connectToDatabase();
-    const [rows] = await db.query("SELECT * FROM employees WHERE email = ?", [
+    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [
       email,
     ]);
     if (rows.length > 0) {
@@ -22,7 +22,7 @@ router.post("/register", async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     await db.query(
-      "INSERT INTO employees (first_name, last_name, email, password) VALUES (?, ?, ?, ?)",
+      "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)",
       [first_name, last_name, email, hashedPassword]
     );
     return res.status(201).json({ message: "User created successfully." });
@@ -38,8 +38,8 @@ router.post("/login", async (req, res) => {
   try {
     const db = await connectToDatabase();
     const [rows] = await db.query(
-      `SELECT email, first_name, last_name
-         FROM employees 
+      `SELECT email, first_name, last_name, password
+         FROM users
          WHERE email = ?`,
       [email]
     );
