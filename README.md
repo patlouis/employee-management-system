@@ -13,3 +13,9 @@ enhance productivity, and provide actionable insights.
   <img alt="MySQL" src="https://img.shields.io/badge/-MySQL-00758F?style=flat-square&logo=mysql&logoColor=white" />
   <img alt="Vite" src="https://img.shields.io/badge/-Vite-646cff?style=flat-square&logo=vite&logoColor=ffffff" />
 </p>
+
+### Preview
+<img width="959" height="409" alt="image" src="https://github.com/user-attachments/assets/678a128e-48b2-423e-9619-b8d2ee437a8d" />
+<img width="959" height="411" alt="image" src="https://github.com/user-attachments/assets/d0a1b5ec-d5a4-47f8-942b-dd5c50dda411" />
+
+
