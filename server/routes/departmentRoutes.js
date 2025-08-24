@@ -32,6 +32,18 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get department count
+router.get("/count", async (req, res) => {
+  try {
+    const db = await connectToDatabase();
+    const [rows] = await db.query("SELECT COUNT(*) AS total FROM departments");
+    res.json({ total: rows[0].total });
+  } catch (err) {
+    console.error("Error fetching department count:", err);
+    res.status(500).json({ error: "Failed to fetch department count" });
+  }
+});
+
 // Get department by ID
 router.get("/:id", async (req, res) => {
   try {

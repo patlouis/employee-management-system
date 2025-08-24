@@ -4,6 +4,7 @@ import DashboardLayout from "../components/DashboardLayout";
 
 export default function AdminDashboard() {
   const [totalEmployees, setTotalEmployees] = useState(null);
+  const [totalDepartments, setTotalDepartments] = useState(null);
 
   useEffect(() => {
     async function fetchEmployeeCount() {
@@ -15,6 +16,18 @@ export default function AdminDashboard() {
       }
     }
     fetchEmployeeCount();
+  }, []);
+
+    useEffect(() => {
+    async function fetchDepartmentCount() {
+      try {
+        const res = await axios.get("http://localhost:3000/api/departments/count");
+        setTotalDepartments(res.data.total);
+      } catch (err) {
+        console.error("Error fetching department count:", err);
+      }
+    }
+    fetchDepartmentCount();
   }, []);
 
   return (
@@ -33,7 +46,9 @@ export default function AdminDashboard() {
 
           <div className="p-4 bg-white rounded-xl shadow">
             <h3 className="text-sm font-medium mb-1">Total Departments</h3>
-            <p className="text-3xl font-semibold">41</p>
+            <p className="text-3xl font-semibold">
+              {totalDepartments !== null ? totalDepartments : "Loading..."}
+            </p>
             <p className="text-xs text-gray-500 mt-1">-2.3% today</p>
           </div>
 
