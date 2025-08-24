@@ -16,7 +16,7 @@ import {
 const navItems = [
   { label: "Overview", icon: LayoutDashboard, to: "/dashboard" },
   { label: "Employees", icon: Users, to: "/dashboard/employees" },
-  { label: "Departments", icon: Layers, to: "/dashboard/analytics" },
+  { label: "Departments", icon: Layers, to: "/dashboard/departments" },
   { label: "Projects", icon: FolderKanban, to: "/dashboard/projects" },
   { label: "Security", icon: ShieldCheck, to: "/dashboard/security" },
   { label: "Settings", icon: Settings, to: "/dashboard/settings" },
@@ -59,7 +59,7 @@ export default function DashboardLayout({ activePage, children }) {
         <div className="mt-auto p-4">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-sm hover:bg-gray-200"
+            className="w-full flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-sm hover:bg-gray-200 cursor-pointer"
           >
             <LogOut className="w-4 h-4" /> Logout
           </button>

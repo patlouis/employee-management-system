@@ -4,6 +4,7 @@ import cors from "cors";
 
 import authRoutes from "./routes/authRoutes.js";
 import employeeRoutes from "./routes/employeeRoutes.js";
+import departmentsRoutes from "./routes/departmentRoutes.js";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
+app.use("/api/departments", departmentsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminDashboard from './pages/AdminDashboard';
 import Employees from './pages/Employees';
+import Departments from './pages/Departments';
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<AdminDashboard />} />
         <Route path="/dashboard/employees" element={<Employees />} />
+        <Route path="/dashboard/departments" element={<Departments />} />
       </Routes>
     </BrowserRouter>
   )
