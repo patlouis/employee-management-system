@@ -134,13 +134,13 @@ export default function Employees() {
                     <td className="px-4 py-2 flex gap-2">
                       <button
                         onClick={() => setEditData({ ...e })}
-                        className="p-1 rounded hover:bg-gray-100"
+                        className="p-1 rounded hover:bg-gray-100 cursor-pointer"
                       >
                         <Edit2 className="w-4 h-4 text-blue-600" />
                       </button>
                       <button
                         onClick={() => handleDelete(e.employee_id)}
-                        className="p-1 rounded hover:bg-gray-100"
+                        className="p-1 rounded hover:bg-gray-100 cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4 text-red-600" />
                       </button>
@@ -172,13 +172,13 @@ export default function Employees() {
                   <button
                     type="button"
                     onClick={() => setShowAddModal(false)}
-                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                    className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
                   >
                     Save
                   </button>
@@ -211,13 +211,13 @@ export default function Employees() {
                   <button
                     type="button"
                     onClick={() => setEditData(null)}
-                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                    className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
                   >
                     Update
                   </button>
