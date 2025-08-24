@@ -77,6 +77,18 @@ router.post("/create", validateEmployee, async (req, res) => {
   }
 });
 
+// GET total employees count
+router.get("/count", async (req, res) => {
+  try {
+    const db = await connectToDatabase();
+    const [rows] = await db.query("SELECT COUNT(*) AS total FROM employees");
+    res.status(200).json(rows[0]);
+  } catch (err) {
+    console.error("[Count Employees Error]", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // UPDATE employee  (PUT /api/employees/:employee_id)
 router.put("/update/:employee_id", validateEmployee, async (req, res) => {
   const { employee_id } = req.params;

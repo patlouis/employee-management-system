@@ -1,6 +1,22 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import DashboardLayout from "../components/DashboardLayout";
 
 export default function AdminDashboard() {
+  const [totalEmployees, setTotalEmployees] = useState(null);
+
+  useEffect(() => {
+    async function fetchEmployeeCount() {
+      try {
+        const res = await axios.get("http://localhost:3000/api/employees/count");
+        setTotalEmployees(res.data.total);
+      } catch (err) {
+        console.error("Error fetching employee count:", err);
+      }
+    }
+    fetchEmployeeCount();
+  }, []);
+
   return (
     <DashboardLayout activePage="Overview">
       {/* Dashboard Content */}
@@ -9,14 +25,18 @@ export default function AdminDashboard() {
         <div className="grid gap-4 md:grid-cols-3">
           <div className="p-4 bg-white rounded-xl shadow">
             <h3 className="text-sm font-medium mb-1">Total Employees</h3>
-            <p className="text-3xl font-semibold">1,284</p>
+            <p className="text-3xl font-semibold">
+              {totalEmployees !== null ? totalEmployees : "Loading..."}
+            </p>
             <p className="text-xs text-gray-500 mt-1">+4.1% from last week</p>
           </div>
+
           <div className="p-4 bg-white rounded-xl shadow">
             <h3 className="text-sm font-medium mb-1">Total Departments</h3>
             <p className="text-3xl font-semibold">41</p>
             <p className="text-xs text-gray-500 mt-1">-2.3% today</p>
           </div>
+
           <div className="p-4 bg-white rounded-xl shadow">
             <h3 className="text-sm font-medium mb-1">Errors</h3>
             <p className="text-3xl font-semibold">7</p>
