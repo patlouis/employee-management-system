@@ -52,7 +52,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// CREATE employee  (POST /api/employees)
+// CREATE employee  (POST /api/employees/create)
 router.post("/create", validateEmployee, async (req, res) => {
   const {
     first_name,
@@ -77,9 +77,9 @@ router.post("/create", validateEmployee, async (req, res) => {
   }
 });
 
-// UPDATE employee  (PUT /api/employees/:id)
-router.put("/update/:id", validateEmployee, async (req, res) => {
-  const { id } = req.params;
+// UPDATE employee  (PUT /api/employees/:employee_id)
+router.put("/update/:employee_id", validateEmployee, async (req, res) => {
+  const { employee_id } = req.params;
   const {
     first_name,
     last_name,
@@ -93,7 +93,9 @@ router.put("/update/:id", validateEmployee, async (req, res) => {
   try {
     const db = await connectToDatabase();
     const [result] = await db.query(
-      "UPDATE employees SET first_name = ?, last_name = ?, email = ?, phone = ?, department_id = ?, position_id = ?, salary = ? WHERE id = ?",
+      `UPDATE employees 
+       SET first_name = ?, last_name = ?, email = ?, phone = ?, department_id = ?, position_id = ?, salary = ? 
+       WHERE employee_id = ?`,
       [
         first_name,
         last_name,
@@ -102,7 +104,7 @@ router.put("/update/:id", validateEmployee, async (req, res) => {
         department_id,
         position_id,
         salary,
-        id,
+        employee_id,
       ]
     );
 
@@ -117,13 +119,16 @@ router.put("/update/:id", validateEmployee, async (req, res) => {
   }
 });
 
-// DELETE employee  (DELETE /api/employees/:id)
-router.delete("/delete/:id", async (req, res) => {
-  const { id } = req.params;
+// DELETE employee  (DELETE /api/employees/:employee_id)
+router.delete("/delete/:employee_id", async (req, res) => {
+  const { employee_id } = req.params;
 
   try {
     const db = await connectToDatabase();
-    const [result] = await db.query("DELETE FROM employees WHERE id = ?", [id]);
+    const [result] = await db.query(
+      "DELETE FROM employees WHERE employee_id = ?",
+      [employee_id]
+    );
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Employee not found." });

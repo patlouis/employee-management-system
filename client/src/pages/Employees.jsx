@@ -39,12 +39,12 @@ export default function Employees() {
   };
 
   // Delete employee
-  const handleDelete = async (id) => {
+  const handleDelete = async (employee_id) => {
     if (!window.confirm("Delete this employee?")) return;
 
     try {
-      await axios.delete(`${API}/delete/${id}`);
-      setEmployees(employees.filter((e) => e.id !== id));
+      await axios.delete(`${API}/delete/${employee_id}`);
+      setEmployees(employees.filter((e) => e.employee_id !== employee_id));
     } catch (err) {
       console.error(err);
       alert("Failed to delete employee");
@@ -72,7 +72,7 @@ export default function Employees() {
     const formData = { ...editData };
 
     try {
-      await axios.put(`${API}/update/${editData.id}`, formData);
+      await axios.put(`${API}/update/${editData.employee_id}`, formData);
       setEditData(null);
       fetchEmployees();
     } catch (err) {
@@ -84,7 +84,6 @@ export default function Employees() {
   return (
     <DashboardLayout activePage="Employees">
       <section className="p-4 md:p-6 space-y-6">
-
         {/* Top Controls */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
           <h2 className="text-xl font-bold">Manage Employees</h2>
@@ -104,18 +103,29 @@ export default function Employees() {
             <table className="min-w-full text-sm">
               <thead className="bg-gray-100">
                 <tr>
-                  {["ID", "Name", "Email", "Phone", "Dept", "Position", "Salary", "Actions"].map(
-                    (h) => (
-                      <th key={h} className="px-4 py-2 text-left">{h}</th>
-                    )
-                  )}
+                  {[
+                    "ID",
+                    "Name",
+                    "Email",
+                    "Phone",
+                    "Dept",
+                    "Position",
+                    "Salary",
+                    "Actions",
+                  ].map((h) => (
+                    <th key={h} className="px-4 py-2 text-left">
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {employees.map((e, i) => (
-                  <tr key={e.id} className="border-b hover:bg-gray-50">
+                {employees.map((e) => (
+                  <tr key={e.employee_id} className="border-b hover:bg-gray-50">
                     <td className="px-4 py-2">{e.employee_id}</td>
-                    <td className="px-4 py-2">{e.first_name} {e.last_name}</td>
+                    <td className="px-4 py-2">
+                      {e.first_name} {e.last_name}
+                    </td>
                     <td className="px-4 py-2">{e.email}</td>
                     <td className="px-4 py-2">{e.phone}</td>
                     <td className="px-4 py-2">{e.department_id}</td>
@@ -129,7 +139,7 @@ export default function Employees() {
                         <Edit2 className="w-4 h-4 text-blue-600" />
                       </button>
                       <button
-                        onClick={() => handleDelete(e.id)}
+                        onClick={() => handleDelete(e.employee_id)}
                         className="p-1 rounded hover:bg-gray-100"
                       >
                         <Trash2 className="w-4 h-4 text-red-600" />
@@ -216,7 +226,6 @@ export default function Employees() {
             </div>
           </div>
         )}
-
       </section>
     </DashboardLayout>
   );
