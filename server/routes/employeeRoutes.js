@@ -52,7 +52,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// CREATE employee
+// CREATE employee  (POST /api/employees)
 router.post("/create", validateEmployee, async (req, res) => {
   const {
     first_name,
@@ -77,7 +77,7 @@ router.post("/create", validateEmployee, async (req, res) => {
   }
 });
 
-// UPDATE employee
+// UPDATE employee  (PUT /api/employees/:id)
 router.put("/update/:id", validateEmployee, async (req, res) => {
   const { id } = req.params;
   const {
@@ -117,7 +117,7 @@ router.put("/update/:id", validateEmployee, async (req, res) => {
   }
 });
 
-// DELETE employee
+// DELETE employee  (DELETE /api/employees/:id)
 router.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
 
