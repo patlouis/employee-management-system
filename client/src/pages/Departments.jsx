@@ -115,13 +115,13 @@ export default function Departments() {
                     <td className="px-4 py-2 flex gap-2">
                       <button
                         onClick={() => setEditData({ ...d })}
-                        className="p-1 rounded hover:bg-gray-100"
+                        className="p-1 rounded hover:bg-gray-100 cursor-pointer"
                       >
                         <Edit2 className="w-4 h-4 text-blue-600" />
                       </button>
                       <button
                         onClick={() => handleDelete(d.department_id)}
-                        className="p-1 rounded hover:bg-gray-100"
+                        className="p-1 rounded hover:bg-gray-100 cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4 text-red-600" />
                       </button>
