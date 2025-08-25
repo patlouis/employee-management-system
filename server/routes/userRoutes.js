@@ -35,6 +35,18 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get department count
+router.get("/count", async (req, res) => {
+  try {
+    const db = await connectToDatabase();
+    const [rows] = await db.query("SELECT COUNT(*) AS total FROM users");
+    res.json({ total: rows[0].total });
+  } catch (err) {
+    console.error("Error fetching user count:", err);
+    res.status(500).json({ error: "Failed to fetch user count" });
+  }
+});
+
 // ================== CREATE user ==================
 router.post("/create", validateUser, async (req, res) => {
   const { first_name, last_name, email, password } = req.body;
