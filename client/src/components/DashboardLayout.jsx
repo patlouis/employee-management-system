@@ -18,7 +18,7 @@ const navItems = [
   { label: "Employees", icon: Users, to: "/dashboard/employees" },
   { label: "Departments", icon: Layers, to: "/dashboard/departments" },
   { label: "Projects", icon: FolderKanban, to: "/dashboard/projects" },
-  { label: "Security", icon: ShieldCheck, to: "/dashboard/security" },
+  { label: "Users", icon: ShieldCheck, to: "/dashboard/users" },
   { label: "Settings", icon: Settings, to: "/dashboard/settings" },
 ];
 
