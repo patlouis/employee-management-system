@@ -11,12 +11,14 @@ import {
   Layers,
   FolderKanban,
   ShieldCheck,
+  Briefcase, // ✅ added for Positions
 } from "lucide-react";
 
 const navItems = [
   { label: "Overview", icon: LayoutDashboard, to: "/dashboard" },
   { label: "Employees", icon: Users, to: "/dashboard/employees" },
   { label: "Departments", icon: Layers, to: "/dashboard/departments" },
+  { label: "Positions", icon: Briefcase, to: "/dashboard/positions" }, // ✅ New tab
   { label: "Projects", icon: FolderKanban, to: "/dashboard/projects" },
   { label: "Users", icon: ShieldCheck, to: "/dashboard/users" },
   { label: "Settings", icon: Settings, to: "/dashboard/settings" },
