@@ -4,7 +4,7 @@ import express from "express";
 const router = express.Router();
 
 // ================= Constants =================
-const POSITION_REQUIRED_FIELDS = ["title"];
+const POSITION_REQUIRED_FIELDS = ["title", "department_id"];
 
 // ================= Helper Functions =================
 function validateFields(body, requiredFields) {
@@ -18,12 +18,15 @@ function validateFields(body, requiredFields) {
 
 // ================= Routes =================
 
-// Get all positions
+// Get all positions with department info
 router.get("/", async (req, res) => {
   try {
     const db = await connectToDatabase();
     const [rows] = await db.query(
-      "SELECT * FROM positions ORDER BY position_id ASC"
+      `SELECT p.*, d.name AS department_name
+       FROM positions p
+       LEFT JOIN departments d ON p.department_id = d.department_id
+       ORDER BY p.position_id ASC`
     );
     res.json(rows);
   } catch (err) {
@@ -37,7 +40,10 @@ router.get("/:id", async (req, res) => {
   try {
     const db = await connectToDatabase();
     const [rows] = await db.query(
-      "SELECT * FROM positions WHERE position_id = ?",
+      `SELECT p.*, d.name AS department_name
+       FROM positions p
+       LEFT JOIN departments d ON p.department_id = d.department_id
+       WHERE p.position_id = ?`,
       [req.params.id]
     );
 
@@ -57,12 +63,12 @@ router.post("/create", async (req, res) => {
     const error = validateFields(req.body, POSITION_REQUIRED_FIELDS);
     if (error) return res.status(400).json({ error });
 
-    const { title, description } = req.body;
+    const { title, description, department_id } = req.body;
     const db = await connectToDatabase();
 
     const [result] = await db.query(
-      "INSERT INTO positions (title, description) VALUES (?, ?)",
-      [title, description || null]
+      "INSERT INTO positions (title, description, department_id) VALUES (?, ?, ?)",
+      [title, description || null, department_id]
     );
 
     res
@@ -77,12 +83,12 @@ router.post("/create", async (req, res) => {
 // Update position
 router.put("/update/:id", async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, department_id } = req.body;
     const db = await connectToDatabase();
 
     const [result] = await db.query(
-      "UPDATE positions SET title = ?, description = ?, updated_at = CURRENT_TIMESTAMP WHERE position_id = ?",
-      [title, description || null, req.params.id]
+      "UPDATE positions SET title = ?, description = ?, department_id = ?, updated_at = CURRENT_TIMESTAMP WHERE position_id = ?",
+      [title, description || null, department_id, req.params.id]
     );
 
     if (result.affectedRows === 0)

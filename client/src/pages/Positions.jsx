@@ -2,23 +2,23 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Plus, Edit2, Trash2 } from "lucide-react";
 import DashboardLayout from "../components/DashboardLayout";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 const API = "http://localhost:3000/api/positions";
+const DEPT_API = "http://localhost:3000/api/departments";
 
 export default function Positions() {
   const [positions, setPositions] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  const fields = ["title", "description"];
-
   useEffect(() => {
     fetchPositions();
+    fetchDepartments();
   }, []);
 
-  // Fetch all positions
   const fetchPositions = async () => {
     try {
       const { data } = await axios.get(API);
@@ -31,10 +31,18 @@ export default function Positions() {
     }
   };
 
-  // Delete position
+  const fetchDepartments = async () => {
+    try {
+      const { data } = await axios.get(DEPT_API);
+      setDepartments(data);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to fetch departments");
+    }
+  };
+
   const handleDelete = async (position_id) => {
     if (!window.confirm("Delete this position?")) return;
-
     try {
       await axios.delete(`${API}/delete/${position_id}`);
       setPositions(positions.filter((p) => p.position_id !== position_id));
@@ -44,11 +52,9 @@ export default function Positions() {
     }
   };
 
-  // Add position
   const handleAdd = async (e) => {
     e.preventDefault();
     const formData = Object.fromEntries(new FormData(e.target));
-
     try {
       await axios.post(`${API}/create`, formData);
       setShowAddModal(false);
@@ -59,7 +65,6 @@ export default function Positions() {
     }
   };
 
-  // Edit position
   const handleEdit = async (e) => {
     e.preventDefault();
     try {
@@ -94,7 +99,15 @@ export default function Positions() {
             <table className="min-w-full text-sm">
               <thead className="bg-gray-100">
                 <tr>
-                  {["ID", "Title", "Description", "Created At", "Updated At", "Actions"].map((h) => (
+                  {[
+                    "ID",
+                    "Title",
+                    "Description",
+                    "Department",
+                    "Created At",
+                    "Updated At",
+                    "Actions",
+                  ].map((h) => (
                     <th key={h} className="px-4 py-2 text-left">
                       {h}
                     </th>
@@ -107,11 +120,16 @@ export default function Positions() {
                     <td className="px-4 py-2">{p.position_id}</td>
                     <td className="px-4 py-2">{p.title}</td>
                     <td className="px-4 py-2">{p.description}</td>
+                    <td className="px-4 py-2">{p.department_name || "—"}</td>
                     <td className="px-4 py-2">
-                    {p.created_at ? dayjs(p.created_at).format("YYYY-MM-DD HH:mm") : "—"}
+                      {p.created_at
+                        ? dayjs(p.created_at).format("YYYY-MM-DD HH:mm")
+                        : "—"}
                     </td>
                     <td className="px-4 py-2">
-                    {p.updated_at ? dayjs(p.updated_at).format("YYYY-MM-DD HH:mm") : "—"}
+                      {p.updated_at
+                        ? dayjs(p.updated_at).format("YYYY-MM-DD HH:mm")
+                        : "—"}
                     </td>
                     <td className="px-4 py-2 flex gap-2">
                       <button
@@ -140,17 +158,32 @@ export default function Positions() {
             <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-lg">
               <h3 className="text-lg font-semibold mb-4">Add Position</h3>
               <form onSubmit={handleAdd} className="space-y-3">
-                {fields.map((f) => (
-                  <input
-                    key={f}
-                    name={f}
-                    type="text"
-                    placeholder={f.toUpperCase()}
-                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
-                    required={f === "title"}
-                  />
-                ))}
-                <div className="flex flex-col sm:flex-row justify-end gap-2 mt-2">
+                <input
+                  name="title"
+                  type="text"
+                  placeholder="TITLE"
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                  required
+                />
+                <input
+                  name="description"
+                  type="text"
+                  placeholder="DESCRIPTION"
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                />
+                <select
+                  name="department_id"
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                  required
+                >
+                  <option value="">Select Department</option>
+                  {departments.map((d) => (
+                    <option key={d.department_id} value={d.department_id}>
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="flex justify-end gap-2 mt-2">
                   <button
                     type="button"
                     onClick={() => setShowAddModal(false)}
@@ -176,20 +209,41 @@ export default function Positions() {
             <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-lg">
               <h3 className="text-lg font-semibold mb-4">Edit Position</h3>
               <form onSubmit={handleEdit} className="space-y-3">
-                {fields.map((f) => (
-                  <input
-                    key={f}
-                    type="text"
-                    placeholder={f.toUpperCase()}
-                    value={editData[f] || ""}
-                    onChange={(e) =>
-                      setEditData({ ...editData, [f]: e.target.value })
-                    }
-                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
-                    required={f === "title"}
-                  />
-                ))}
-                <div className="flex flex-col sm:flex-row justify-end gap-2 mt-2">
+                <input
+                  type="text"
+                  placeholder="TITLE"
+                  value={editData.title || ""}
+                  onChange={(e) =>
+                    setEditData({ ...editData, title: e.target.value })
+                  }
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="DESCRIPTION"
+                  value={editData.description || ""}
+                  onChange={(e) =>
+                    setEditData({ ...editData, description: e.target.value })
+                  }
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                />
+                <select
+                  value={editData.department_id || ""}
+                  onChange={(e) =>
+                    setEditData({ ...editData, department_id: e.target.value })
+                  }
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                  required
+                >
+                  <option value="">Select Department</option>
+                  {departments.map((d) => (
+                    <option key={d.department_id} value={d.department_id}>
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="flex justify-end gap-2 mt-2">
                   <button
                     type="button"
                     onClick={() => setEditData(null)}
