@@ -39,6 +39,18 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get project count
+router.get("/count", async (req, res) => {
+  try {
+    const db = await connectToDatabase();
+    const [rows] = await db.query("SELECT COUNT(*) AS total FROM projects");
+    res.json({ total: rows[0].total });
+  } catch (err) {
+    console.error("Error fetching project count:", err);
+    res.status(500).json({ error: "Failed to fetch user count" });
+  }
+});
+
 // Get project by ID
 router.get("/:id", async (req, res) => {
   try {
