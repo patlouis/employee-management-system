@@ -7,6 +7,8 @@ const API = "http://localhost:3000/api/employees";
 
 export default function Employees() {
   const [employees, setEmployees] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -16,16 +18,16 @@ export default function Employees() {
     "last_name",
     "email",
     "phone",
-    "department_id",
-    "position_id",
     "salary",
   ];
 
   useEffect(() => {
     fetchEmployees();
+    fetchDepartments();
+    fetchPositions();
   }, []);
 
-  // Fetch all employees
+  // Fetch employees
   const fetchEmployees = async () => {
     try {
       const { data } = await axios.get(API);
@@ -38,10 +40,31 @@ export default function Employees() {
     }
   };
 
-  // Delete employee
+  // Fetch departments
+  const fetchDepartments = async () => {
+    try {
+      const { data } = await axios.get("http://localhost:3000/api/departments");
+      setDepartments(data);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to fetch departments");
+    }
+  };
+
+  // Fetch positions
+  const fetchPositions = async () => {
+    try {
+      const { data } = await axios.get("http://localhost:3000/api/positions");
+      setPositions(data);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to fetch positions");
+    }
+  };
+
+  // Delete
   const handleDelete = async (employee_id) => {
     if (!window.confirm("Delete this employee?")) return;
-
     try {
       await axios.delete(`${API}/delete/${employee_id}`);
       setEmployees(employees.filter((e) => e.employee_id !== employee_id));
@@ -51,7 +74,7 @@ export default function Employees() {
     }
   };
 
-  // Add employee
+  // Add
   const handleAdd = async (e) => {
     e.preventDefault();
     const formData = Object.fromEntries(new FormData(e.target));
@@ -66,7 +89,7 @@ export default function Employees() {
     }
   };
 
-  // Edit employee
+  // Edit
   const handleEdit = async (e) => {
     e.preventDefault();
     const formData = { ...editData };
@@ -84,12 +107,12 @@ export default function Employees() {
   return (
     <DashboardLayout activePage="Employees">
       <section className="p-4 md:p-6 space-y-6">
-        {/* Top Controls */}
+        {/* Controls */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
           <h2 className="text-xl font-bold">Manage Employees</h2>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 whitespace-nowrap cursor-pointer"
+            className="flex items-center gap-2 bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 cursor-pointer"
           >
             <Plus className="w-4 h-4" /> Add Employee
           </button>
@@ -103,19 +126,8 @@ export default function Employees() {
             <table className="min-w-full text-sm">
               <thead className="bg-gray-100">
                 <tr>
-                  {[
-                    "ID",
-                    "Name",
-                    "Email",
-                    "Phone",
-                    "Dept",
-                    "Position",
-                    "Salary",
-                    "Actions",
-                  ].map((h) => (
-                    <th key={h} className="px-4 py-2 text-left">
-                      {h}
-                    </th>
+                  {["ID","Name","Email","Phone","Dept","Position","Salary","Actions"].map((h) => (
+                    <th key={h} className="px-4 py-2 text-left">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -123,12 +135,9 @@ export default function Employees() {
                 {employees.map((e) => (
                   <tr key={e.employee_id} className="border-b hover:bg-gray-50">
                     <td className="px-4 py-2">{e.employee_id}</td>
-                    <td className="px-4 py-2">
-                      {e.first_name} {e.last_name}
-                    </td>
+                    <td className="px-4 py-2">{e.first_name} {e.last_name}</td>
                     <td className="px-4 py-2">{e.email}</td>
                     <td className="px-4 py-2">{e.phone}</td>
-                    {/* ✅ Show names instead of IDs */}
                     <td className="px-4 py-2">{e.department_name || e.department}</td>
                     <td className="px-4 py-2">{e.position_name || e.position}</td>
                     <td className="px-4 py-2">{e.salary}</td>
@@ -165,24 +174,33 @@ export default function Employees() {
                     name={f}
                     type={f === "email" ? "email" : "text"}
                     placeholder={f.replace("_", " ").toUpperCase()}
-                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                    className="w-full border rounded px-3 py-2"
                     required
                   />
                 ))}
-                <div className="flex flex-col sm:flex-row justify-end gap-2 mt-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowAddModal(false)}
-                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
-                  >
-                    Save
-                  </button>
+
+                {/* Dropdowns */}
+                <select name="department_id" className="w-full border rounded px-3 py-2" required>
+                  <option value="">Select Department</option>
+                  {departments.map((d) => (
+                    <option key={d.department_id} value={d.department_id}>
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+
+                <select name="position_id" className="w-full border rounded px-3 py-2" required>
+                  <option value="">Select Position</option>
+                  {positions.map((p) => (
+                    <option key={p.position_id} value={p.position_id}>
+                      {p.title}
+                    </option>
+                  ))}
+                </select>
+
+                <div className="flex justify-end gap-2 mt-2">
+                  <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Cancel</button>
+                  <button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Save</button>
                 </div>
               </form>
             </div>
@@ -201,27 +219,44 @@ export default function Employees() {
                     type={f === "email" ? "email" : "text"}
                     placeholder={f.replace("_", " ").toUpperCase()}
                     value={editData[f] || ""}
-                    onChange={(e) =>
-                      setEditData({ ...editData, [f]: e.target.value })
-                    }
-                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                    onChange={(e) => setEditData({ ...editData, [f]: e.target.value })}
+                    className="w-full border rounded px-3 py-2"
                     required
                   />
                 ))}
-                <div className="flex flex-col sm:flex-row justify-end gap-2 mt-2">
-                  <button
-                    type="button"
-                    onClick={() => setEditData(null)}
-                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
-                  >
-                    Update
-                  </button>
+
+                {/* Dropdowns */}
+                <select
+                  value={editData.department_id || ""}
+                  onChange={(e) => setEditData({ ...editData, department_id: e.target.value })}
+                  className="w-full border rounded px-3 py-2"
+                  required
+                >
+                  <option value="">Select Department</option>
+                  {departments.map((d) => (
+                    <option key={d.department_id} value={d.department_id}>
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={editData.position_id || ""}
+                  onChange={(e) => setEditData({ ...editData, position_id: e.target.value })}
+                  className="w-full border rounded px-3 py-2"
+                  required
+                >
+                  <option value="">Select Position</option>
+                  {positions.map((p) => (
+                    <option key={p.position_id} value={p.position_id}>
+                      {p.title}
+                    </option>
+                  ))}
+                </select>
+
+                <div className="flex justify-end gap-2 mt-2">
+                  <button type="button" onClick={() => setEditData(null)} className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Cancel</button>
+                  <button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Update</button>
                 </div>
               </form>
             </div>
