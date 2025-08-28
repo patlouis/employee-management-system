@@ -3,7 +3,6 @@ import express from "express";
 
 const router = express.Router();
 
-// ================= Constants =================
 const EMPLOYEE_REQUIRED_FIELDS = [
   "first_name",
   "last_name",
@@ -14,70 +13,37 @@ const EMPLOYEE_REQUIRED_FIELDS = [
   "salary",
 ];
 
-// ================= Helper Functions =================
+// ================= Helper =================
 function validateFields(body, requiredFields) {
   for (const field of requiredFields) {
     if (!body[field]) return `${field} is required.`;
   }
-
-  if (body.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
-    return "Invalid email format.";
-  }
-
-  if (body.salary && isNaN(body.salary)) {
-    return "Salary must be a number.";
-  }
-
   return null;
-}
-
-// ================= Middleware =================
-function validateEmployee(req, res, next) {
-  const error = validateFields(req.body, EMPLOYEE_REQUIRED_FIELDS);
-  if (error) return res.status(400).json({ message: error });
-  next();
 }
 
 // ================= Routes =================
 
-// GET all employees
+// Get all employees with department & position names
 router.get("/", async (req, res) => {
   try {
     const db = await connectToDatabase();
-    const [rows] = await db.query("SELECT * FROM employees");
-    res.status(200).json(rows);
-  } catch (err) {
-    console.error("[Fetch Employees Error]", err);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-// CREATE employee  (POST /api/employees/create)
-router.post("/create", validateEmployee, async (req, res) => {
-  const {
-    first_name,
-    last_name,
-    email,
-    phone,
-    department_id,
-    position_id,
-    salary,
-  } = req.body;
-
-  try {
-    const db = await connectToDatabase();
-    await db.query(
-      "INSERT INTO employees (first_name, last_name, email, phone, department_id, position_id, salary) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [first_name, last_name, email, phone, department_id, position_id, salary]
+    const [rows] = await db.query(
+      `SELECT e.employee_id, e.first_name, e.last_name, e.email, e.phone,
+              e.salary, e.department_id, e.position_id,
+              d.name AS department, p.title AS position
+       FROM employees e
+       LEFT JOIN departments d ON e.department_id = d.department_id
+       LEFT JOIN positions p ON e.position_id = p.position_id
+       ORDER BY e.employee_id DESC`
     );
-    res.status(201).json({ message: "Employee created successfully." });
+    res.json(rows);
   } catch (err) {
-    console.error("[Create Employee Error]", err);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error fetching employees:", err);
+    res.status(500).json({ error: "Failed to fetch employees." });
   }
 });
 
-// GET total employees count
+// GET total employee count
 router.get("/count", async (req, res) => {
   try {
     const db = await connectToDatabase();
@@ -89,25 +55,58 @@ router.get("/count", async (req, res) => {
   }
 });
 
-// UPDATE employee  (PUT /api/employees/:employee_id)
-router.put("/update/:employee_id", validateEmployee, async (req, res) => {
-  const { employee_id } = req.params;
-  const {
-    first_name,
-    last_name,
-    email,
-    phone,
-    department_id,
-    position_id,
-    salary,
-  } = req.body;
-
+// Create
+router.post("/create", async (req, res) => {
   try {
+    const error = validateFields(req.body, EMPLOYEE_REQUIRED_FIELDS);
+    if (error) return res.status(400).json({ error });
+
     const db = await connectToDatabase();
-    const [result] = await db.query(
+    const {
+      first_name,
+      last_name,
+      email,
+      phone,
+      department_id,
+      position_id,
+      salary,
+    } = req.body;
+
+    await db.query(
+      `INSERT INTO employees (first_name, last_name, email, phone, department_id, position_id, salary)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [first_name, last_name, email, phone, department_id, position_id, salary]
+    );
+
+    res.json({ message: "Employee created successfully." });
+  } catch (err) {
+    console.error("Error creating employee:", err);
+    res.status(500).json({ error: "Failed to create employee." });
+  }
+});
+
+// Update
+router.put("/update/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const error = validateFields(req.body, EMPLOYEE_REQUIRED_FIELDS);
+    if (error) return res.status(400).json({ error });
+
+    const db = await connectToDatabase();
+    const {
+      first_name,
+      last_name,
+      email,
+      phone,
+      department_id,
+      position_id,
+      salary,
+    } = req.body;
+
+    await db.query(
       `UPDATE employees 
-       SET first_name = ?, last_name = ?, email = ?, phone = ?, department_id = ?, position_id = ?, salary = ? 
-       WHERE employee_id = ?`,
+       SET first_name=?, last_name=?, email=?, phone=?, department_id=?, position_id=?, salary=?
+       WHERE employee_id=?`,
       [
         first_name,
         last_name,
@@ -116,40 +115,27 @@ router.put("/update/:employee_id", validateEmployee, async (req, res) => {
         department_id,
         position_id,
         salary,
-        employee_id,
+        id,
       ]
     );
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Employee not found." });
-    }
-
-    res.status(200).json({ message: "Employee updated successfully." });
+    res.json({ message: "Employee updated successfully." });
   } catch (err) {
-    console.error("[Update Employee Error]", err);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error updating employee:", err);
+    res.status(500).json({ error: "Failed to update employee." });
   }
 });
 
-// DELETE employee  (DELETE /api/employees/:employee_id)
-router.delete("/delete/:employee_id", async (req, res) => {
-  const { employee_id } = req.params;
-
+// Delete
+router.delete("/delete/:id", async (req, res) => {
   try {
+    const { id } = req.params;
     const db = await connectToDatabase();
-    const [result] = await db.query(
-      "DELETE FROM employees WHERE employee_id = ?",
-      [employee_id]
-    );
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Employee not found." });
-    }
-
-    res.status(200).json({ message: "Employee deleted successfully." });
+    await db.query("DELETE FROM employees WHERE employee_id=?", [id]);
+    res.json({ message: "Employee deleted successfully." });
   } catch (err) {
-    console.error("[Delete Employee Error]", err);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error deleting employee:", err);
+    res.status(500).json({ error: "Failed to delete employee." });
   }
 });
 

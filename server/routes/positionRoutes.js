@@ -35,6 +35,18 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET total position count
+router.get("/count", async (req, res) => {
+  try {
+    const db = await connectToDatabase();
+    const [rows] = await db.query("SELECT COUNT(*) AS total FROM positions");
+    res.status(200).json(rows[0]);
+  } catch (err) {
+    console.error("[Count Positions Error]", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // Get position by ID
 router.get("/:id", async (req, res) => {
   try {

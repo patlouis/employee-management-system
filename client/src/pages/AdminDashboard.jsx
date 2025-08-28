@@ -5,6 +5,7 @@ import DashboardLayout from "../components/DashboardLayout";
 export default function AdminDashboard() {
   const [totalEmployees, setTotalEmployees] = useState(null);
   const [totalDepartments, setTotalDepartments] = useState(null);
+  const [totalPositions, setTotalPositions] = useState(null);
   const [totalUsers, setTotalUsers] = useState(null);
 
   useEffect(() => {
@@ -31,6 +32,18 @@ export default function AdminDashboard() {
     fetchDepartmentCount();
   }, []);
 
+    useEffect(() => {
+    async function fetchPositionCount() {
+      try {
+        const res = await axios.get("http://localhost:3000/api/positions/count");
+        setTotalPositions(res.data.total);
+      } catch (err) {
+        console.error("Error fetching position count:", err);
+      }
+    }
+    fetchPositionCount();
+  }, []);
+
       useEffect(() => {
     async function fetchUserCount() {
       try {
@@ -48,7 +61,7 @@ export default function AdminDashboard() {
       {/* Dashboard Content */}
       <section className="p-4 md:p-6 space-y-6">
         {/* Stats */}
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-4">
           <div className="p-4 bg-white rounded-xl shadow">
             <h3 className="text-sm font-medium mb-1">Total Employees</h3>
             <p className="text-3xl font-semibold">
@@ -66,7 +79,14 @@ export default function AdminDashboard() {
           </div>
 
           <div className="p-4 bg-white rounded-xl shadow">
-            <h3 className="text-sm font-medium mb-1">Total Users</h3>
+            <h3 className="text-sm font-medium mb-1">Total Positions</h3>
+            <p className="text-3xl font-semibold">
+              {totalPositions !== null ? totalPositions : "Loading..."}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">0 critical</p>
+          </div>
+          <div className="p-4 bg-white rounded-xl shadow">
+            <h3 className="text-sm font-medium mb-1">Total Projects</h3>
             <p className="text-3xl font-semibold">
               {totalUsers !== null ? totalUsers : "Loading..."}
             </p>

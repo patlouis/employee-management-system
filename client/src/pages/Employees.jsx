@@ -128,8 +128,9 @@ export default function Employees() {
                     </td>
                     <td className="px-4 py-2">{e.email}</td>
                     <td className="px-4 py-2">{e.phone}</td>
-                    <td className="px-4 py-2">{e.department_id}</td>
-                    <td className="px-4 py-2">{e.position_id}</td>
+                    {/* ✅ Show names instead of IDs */}
+                    <td className="px-4 py-2">{e.department_name || e.department}</td>
+                    <td className="px-4 py-2">{e.position_name || e.position}</td>
                     <td className="px-4 py-2">{e.salary}</td>
                     <td className="px-4 py-2 flex gap-2">
                       <button
