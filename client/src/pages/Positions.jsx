@@ -34,7 +34,8 @@ export default function Positions() {
   const fetchDepartments = async () => {
     try {
       const { data } = await axios.get(DEPT_API);
-      setDepartments(data);
+      // ✅ sort alphabetically for easier dropdown selection
+      setDepartments(data.sort((a, b) => a.name.localeCompare(b.name)));
     } catch (err) {
       console.error(err);
       alert("Failed to fetch departments");
@@ -119,7 +120,7 @@ export default function Positions() {
                   <tr key={p.position_id} className="border-b hover:bg-gray-50">
                     <td className="px-4 py-2">{p.position_id}</td>
                     <td className="px-4 py-2">{p.title}</td>
-                    <td className="px-4 py-2">{p.description}</td>
+                    <td className="px-4 py-2">{p.description || "—"}</td>
                     <td className="px-4 py-2">{p.department_name || "—"}</td>
                     <td className="px-4 py-2">
                       {p.created_at
@@ -171,6 +172,7 @@ export default function Positions() {
                   placeholder="DESCRIPTION"
                   className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
                 />
+                {/* ✅ Dropdown for Department */}
                 <select
                   name="department_id"
                   className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
