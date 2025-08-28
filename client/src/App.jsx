@@ -6,6 +6,7 @@ import Employees from './pages/Employees';
 import Departments from './pages/Departments';
 import Users from './pages/Users';
 import Positions from './pages/Positions';
+import Projects from './pages/Projects';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/dashboard/departments" element={<Departments />} />
         <Route path="/dashboard/users" element={<Users />} />
         <Route path="/dashboard/positions" element={<Positions />} />
+        <Route path="/dashboard/projects" element={<Projects />} />
       </Routes>
     </BrowserRouter>
   )
