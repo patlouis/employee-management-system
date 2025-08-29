@@ -21,6 +21,7 @@ function Login() {
       const res = await axios.post("http://localhost:3000/api/auth/login", formData);
       // Store the token in localStorage or context
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
       setMessage("Login successful!");
       setTimeout(() => navigate("/dashboard"), 1000);
     } catch (err) {

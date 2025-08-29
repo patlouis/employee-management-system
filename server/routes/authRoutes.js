@@ -20,11 +20,13 @@ router.post("/register", async (req, res) => {
     if (rows.length > 0) {
       return res.status(409).json({ message: "Email already exists." });
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     await db.query(
       "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)",
       [first_name, last_name, email, hashedPassword]
     );
+
     return res.status(201).json({ message: "User created successfully." });
   } catch (err) {
     console.error("[Register Error]", err);
@@ -38,22 +40,26 @@ router.post("/login", async (req, res) => {
   try {
     const db = await connectToDatabase();
     const [rows] = await db.query(
-      `SELECT email, first_name, last_name, password
-         FROM users
-         WHERE email = ?`,
+      `SELECT user_id, email, first_name, last_name, password
+       FROM users
+       WHERE email = ?`,
       [email]
     );
 
     if (rows.length === 0) {
       return res.status(401).json({ message: "User does not exist." });
     }
+
     const user = rows[0];
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Wrong password." });
     }
+
+    // Create JWT
     const token = jwt.sign(
       {
+        user_id: user.user_id,
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
@@ -61,7 +67,17 @@ router.post("/login", async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "3h" }
     );
-    return res.status(200).json({ token });
+
+    // Return token + user info
+    return res.status(200).json({
+      token,
+      user: {
+        user_id: user.user_id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+      },
+    });
   } catch (err) {
     console.error("[Login Error]", err);
     res.status(500).json({ message: "Internal server error" });

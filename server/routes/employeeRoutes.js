@@ -33,8 +33,7 @@ router.get("/", async (req, res) => {
               d.name AS department, p.title AS position
        FROM employees e
        LEFT JOIN departments d ON e.department_id = d.department_id
-       LEFT JOIN positions p ON e.position_id = p.position_id
-       ORDER BY e.employee_id DESC`
+       LEFT JOIN positions p ON e.position_id = p.position_id`
     );
     res.json(rows);
   } catch (err) {

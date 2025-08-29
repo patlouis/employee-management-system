@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -11,7 +11,7 @@ import {
   Layers,
   FolderKanban,
   ShieldCheck,
-  Briefcase, 
+  Briefcase,
 } from "lucide-react";
 
 const navItems = [
@@ -27,11 +27,21 @@ const navItems = [
 export default function DashboardLayout({ activePage, children }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(activePage || "Overview");
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Load user info from localStorage
+    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       navigate("/");
     }
   };
@@ -71,7 +81,10 @@ export default function DashboardLayout({ activePage, children }) {
       {/* Mobile Topbar */}
       <header className="md:hidden sticky top-0 z-40 border-b bg-white shadow-sm">
         <div className="h-14 px-3 flex items-center justify-between">
-          <button onClick={() => setOpen(true)} className="p-2 rounded-md hover:bg-gray-100">
+          <button
+            onClick={() => setOpen(true)}
+            className="p-2 rounded-md hover:bg-gray-100"
+          >
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
@@ -87,7 +100,10 @@ export default function DashboardLayout({ activePage, children }) {
       {/* Mobile Drawer */}
       {open && (
         <div className="md:hidden fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setOpen(false)}
+          />
           <aside className="relative z-10 h-full w-72 max-w-[86%] border-r bg-white p-4 flex flex-col">
             <div className="flex items-center gap-3 mb-4">
               <LayoutDashboard className="w-6 h-6 text-blue-600" />
@@ -142,11 +158,19 @@ export default function DashboardLayout({ activePage, children }) {
             </button>
             <div className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-full bg-gray-200 grid place-items-center font-semibold text-gray-600">
-                AD
+                {user
+                  ? user.first_name[0] + user.last_name[0]
+                  : "AD"}
               </div>
               <div className="hidden lg:block">
-                <p className="text-sm font-medium">Admin User</p>
-                <p className="text-xs text-gray-400">admin@example.com</p>
+                <p className="text-sm font-medium">
+                  {user
+                    ? `${user.first_name} ${user.last_name}`
+                    : "Admin User"}
+                </p>
+                <p className="text-xs text-gray-400">
+                  {user ? user.email : "admin@example.com"}
+                </p>
               </div>
             </div>
           </div>
