@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   Briefcase,
 } from "lucide-react";
+import { jwtDecode } from "jwt-decode";
 
 const navItems = [
   { label: "Overview", icon: LayoutDashboard, to: "/dashboard" },
@@ -31,17 +32,22 @@ export default function DashboardLayout({ activePage, children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Load user info from localStorage
-    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
-    if (storedUser) {
-      setUser(storedUser);
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUser(decoded);
+      } catch (err) {
+        console.error("Invalid token:", err);
+        localStorage.removeItem("token");
+        navigate("/");
+      }
     }
-  }, []);
+  }, [navigate]);
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       localStorage.removeItem("token");
-      localStorage.removeItem("user");
       navigate("/");
     }
   };
@@ -158,9 +164,7 @@ export default function DashboardLayout({ activePage, children }) {
             </button>
             <div className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-full bg-gray-200 grid place-items-center font-semibold text-gray-600">
-                {user
-                  ? user.first_name[0] + user.last_name[0]
-                  : "AD"}
+                {user ? user.first_name[0] + user.last_name[0] : "AD"}
               </div>
               <div className="hidden lg:block">
                 <p className="text-sm font-medium">
