@@ -23,7 +23,11 @@ export default function AdminDashboard() {
     useEffect(() => {
     async function fetchDepartmentCount() {
       try {
-        const res = await axios.get("http://localhost:3000/api/departments/count");
+        const res = await axios.get("http://localhost:3000/api/departments/count", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setTotalDepartments(res.data.total);
       } catch (err) {
         console.error("Error fetching department count:", err);

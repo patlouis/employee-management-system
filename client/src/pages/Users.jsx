@@ -20,7 +20,9 @@ export default function Users() {
   // Fetch all users
   const fetchUsers = async () => {
     try {
-      const { data } = await axios.get(API);
+      const { data } = await axios.get(API, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setUsers(data);
     } catch (err) {
       console.error(err);
