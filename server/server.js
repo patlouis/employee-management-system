@@ -9,6 +9,8 @@ import userRoutes from "./routes/userRoutes.js";
 import positionRoutes from "./routes/positionRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 
+import { verifyToken } from "./middlewares/authMiddleware.js";
+
 dotenv.config();
 
 const app = express();
@@ -23,9 +25,9 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
-app.use("/api/departments", departmentsRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/positions", positionRoutes);
+app.use("/api/departments", verifyToken, departmentsRoutes);
+app.use("/api/users", verifyToken, userRoutes);
+app.use("/api/positions", verifyToken, positionRoutes);
 app.use("/api/projects", projectRoutes);
 
 app.listen(PORT, () => {

@@ -21,7 +21,9 @@ export default function Positions() {
 
   const fetchPositions = async () => {
     try {
-      const { data } = await axios.get(API);
+      const { data } = await axios.get(API, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setPositions(data);
     } catch (err) {
       console.error(err);
@@ -33,9 +35,10 @@ export default function Positions() {
 
   const fetchDepartments = async () => {
     try {
-      const { data } = await axios.get(DEPT_API);
-      // ✅ sort alphabetically for easier dropdown selection
-      setDepartments(data.sort((a, b) => a.name.localeCompare(b.name)));
+      const { data } = await axios.get(DEPT_API, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setDepartments(data);
     } catch (err) {
       console.error(err);
       alert("Failed to fetch departments");

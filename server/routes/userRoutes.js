@@ -1,5 +1,4 @@
 import { connectToDatabase } from "../lib/database.js";
-import { verifyToken } from "../middlewares/authMiddleware.js";
 import express from "express";
 import bcrypt from "bcrypt";
 
@@ -25,7 +24,6 @@ function validateUser(req, res, next) {
 }
 
 // ================== GET all users ==================
-router.use(verifyToken);
 
 router.get("/", async (req, res) => {
   try {
