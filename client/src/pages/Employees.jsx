@@ -142,7 +142,7 @@ export default function Employees() {
               </thead>
               <tbody>
                 {employees.map((e) => (
-                  <tr key={e.employee_id} className="border-b hover:bg-gray-50">
+                  <tr key={e.employee_id} className="border-b last:border-b-0 hover:bg-gray-50">
                     <td className="px-4 py-2">{e.employee_id}</td>
                     <td className="px-4 py-2">{e.first_name} {e.last_name}</td>
                     <td className="px-4 py-2">{e.email}</td>

@@ -114,7 +114,7 @@ export default function Departments() {
               </thead>
               <tbody>
                 {departments.map((d) => (
-                  <tr key={d.department_id} className="border-b hover:bg-gray-50">
+                  <tr key={d.department_id} className="border-b last:border-b-0 hover:bg-gray-50">
                     <td className="px-4 py-2">{d.department_id}</td>
                     <td className="px-4 py-2">{d.name}</td>
                     <td className="px-4 py-2">{d.description}</td>

@@ -110,7 +110,7 @@ export default function Users() {
               </thead>
               <tbody>
                 {users.map((u) => (
-                  <tr key={u.user_id} className="border-b hover:bg-gray-50">
+                  <tr key={u.user_id} className="border-b last:border-b-0 hover:bg-gray-50">
                     <td className="px-4 py-2">{u.user_id}</td>
                     <td className="px-4 py-2">{u.first_name} {u.last_name}</td>
                     <td className="px-4 py-2">{u.email}</td>

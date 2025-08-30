@@ -122,7 +122,7 @@ export default function Projects() {
               </thead>
               <tbody>
                 {projects.map((p) => (
-                  <tr key={p.project_id} className="border-b hover:bg-gray-50">
+                  <tr key={p.project_id} className="border-b last:border-b-0 hover:bg-gray-50">
                     <td className="px-4 py-2">{p.project_id}</td>
                     <td className="px-4 py-2">{p.title}</td>
                     <td className="px-4 py-2">{p.department_name || "—"}</td>
