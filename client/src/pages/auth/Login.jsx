@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 
 function Login() {
@@ -7,28 +8,30 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setMessage("");
 
-    try {
-      const res = await axios.post("http://localhost:3000/api/auth/login", formData);
-      // Store the token in localStorage or context
-      localStorage.setItem("token", res.data.token);
-      setMessage("Login successful!");
-      setTimeout(() => navigate("/dashboard"), 1000);
-    } catch (err) {
-      setMessage(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const res = await axios.post("http://localhost:3000/api/auth/login", formData);
+    const token = res.data.token;
+    login(token);
+
+    setMessage("Login successful!");
+    navigate("/dashboard");
+  } catch (err) {
+    setMessage(err.response?.data?.message || "Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
