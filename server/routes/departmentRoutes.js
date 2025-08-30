@@ -1,4 +1,5 @@
 import { connectToDatabase } from "../lib/database.js";
+import { verifyToken } from "../middlewares/authMiddleware.js";
 import express from "express";
 
 const router = express.Router();
@@ -17,6 +18,9 @@ function validateFields(body, requiredFields) {
 }
 
 // ================= Routes =================
+
+// Protect all routes
+router.use(verifyToken);
 
 // Get all departments
 router.get("/", async (req, res) => {
