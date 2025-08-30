@@ -29,8 +29,7 @@ router.get("/", async (req, res) => {
     const [rows] = await db.query(
       `SELECT p.*, d.name AS department_name 
        FROM projects p
-       LEFT JOIN departments d ON p.department_id = d.department_id
-       ORDER BY p.project_id ASC`
+       LEFT JOIN departments d ON p.department_id = d.department_id`
     );
     res.json(rows);
   } catch (err) {

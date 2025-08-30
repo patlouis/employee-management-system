@@ -22,7 +22,9 @@ export default function Projects() {
 
   const fetchProjects = async () => {
     try {
-      const { data } = await axios.get(API);
+      const { data } = await axios.get(API, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setProjects(data);
     } catch (err) {
       console.error(err);
@@ -34,7 +36,9 @@ export default function Projects() {
 
   const fetchDepartments = async () => {
     try {
-      const { data } = await axios.get("http://localhost:3000/api/departments");
+      const { data } = await axios.get("http://localhost:3000/api/departments", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setDepartments(data);
     } catch (err) {
       console.error(err);

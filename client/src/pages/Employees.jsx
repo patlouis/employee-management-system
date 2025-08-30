@@ -30,7 +30,9 @@ export default function Employees() {
   // Fetch employees
   const fetchEmployees = async () => {
     try {
-      const { data } = await axios.get(API);
+      const { data } = await axios.get(API, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setEmployees(data);
     } catch (err) {
       console.error(err);
@@ -43,7 +45,9 @@ export default function Employees() {
   // Fetch departments
   const fetchDepartments = async () => {
     try {
-      const { data } = await axios.get("http://localhost:3000/api/departments");
+      const { data } = await axios.get("http://localhost:3000/api/departments", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setDepartments(data);
     } catch (err) {
       console.error(err);
@@ -54,7 +58,9 @@ export default function Employees() {
   // Fetch positions
   const fetchPositions = async () => {
     try {
-      const { data } = await axios.get("http://localhost:3000/api/positions");
+      const { data } = await axios.get("http://localhost:3000/api/positions", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setPositions(data);
     } catch (err) {
       console.error(err);

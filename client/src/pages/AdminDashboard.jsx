@@ -39,7 +39,11 @@ export default function AdminDashboard() {
     useEffect(() => {
     async function fetchPositionCount() {
       try {
-        const res = await axios.get("http://localhost:3000/api/positions/count");
+        const res = await axios.get("http://localhost:3000/api/positions/count", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setTotalPositions(res.data.total);
       } catch (err) {
         console.error("Error fetching position count:", err);
@@ -51,7 +55,11 @@ export default function AdminDashboard() {
     useEffect(() => {
     async function fetchProjectCount() {
       try {
-        const res = await axios.get("http://localhost:3000/api/projects/count");
+        const res = await axios.get("http://localhost:3000/api/projects/count", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setTotalProjects(res.data.total);
       } catch (err) {
         console.error("Error fetching project count:", err);
