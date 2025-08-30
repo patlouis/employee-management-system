@@ -10,16 +10,12 @@ export default function Employees() {
   const [departments, setDepartments] = useState([]);
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [showAddModal, setShowAddModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [selectedDept, setSelectedDept] = useState(""); // For Add modal
 
-  const fields = [
-    "first_name",
-    "last_name",
-    "email",
-    "phone",
-    "salary",
-  ];
+  const fields = ["first_name", "last_name", "email", "phone", "salary"];
 
   useEffect(() => {
     fetchEmployees();
@@ -92,6 +88,7 @@ export default function Employees() {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setShowAddModal(false);
+      setSelectedDept("");
       fetchEmployees();
     } catch (err) {
       console.error(err);
@@ -138,7 +135,7 @@ export default function Employees() {
             <table className="min-w-full text-sm">
               <thead className="bg-gray-100">
                 <tr>
-                  {["ID","Name","Email","Phone","Dept","Position","Salary","Actions"].map((h) => (
+                  {["ID", "Name", "Email", "Phone", "Dept", "Position", "Salary", "Actions"].map((h) => (
                     <th key={h} className="px-4 py-2 text-left">{h}</th>
                   ))}
                 </tr>
@@ -150,8 +147,8 @@ export default function Employees() {
                     <td className="px-4 py-2">{e.first_name} {e.last_name}</td>
                     <td className="px-4 py-2">{e.email}</td>
                     <td className="px-4 py-2">{e.phone}</td>
-                    <td className="px-4 py-2">{e.department_name || e.department}</td>
-                    <td className="px-4 py-2">{e.position_name || e.position}</td>
+                    <td className="px-4 py-2">{e.department}</td>
+                    <td className="px-4 py-2">{e.position}</td>
                     <td className="px-4 py-2">{e.salary}</td>
                     <td className="px-4 py-2 flex gap-2">
                       <button
@@ -191,8 +188,14 @@ export default function Employees() {
                   />
                 ))}
 
-                {/* Dropdowns */}
-                <select name="department_id" className="w-full border rounded px-3 py-2" required>
+                {/* Department dropdown */}
+                <select
+                  name="department_id"
+                  className="w-full border rounded px-3 py-2"
+                  required
+                  value={selectedDept}
+                  onChange={(e) => setSelectedDept(e.target.value)}
+                >
                   <option value="">Select Department</option>
                   {departments.map((d) => (
                     <option key={d.department_id} value={d.department_id}>
@@ -201,18 +204,35 @@ export default function Employees() {
                   ))}
                 </select>
 
-                <select name="position_id" className="w-full border rounded px-3 py-2" required>
+                {/* Filtered Positions */}
+                <select name="position_id" disabled={!selectedDept} className="w-full border rounded px-3 py-2 disabled:bg-gray-100" required>
                   <option value="">Select Position</option>
-                  {positions.map((p) => (
-                    <option key={p.position_id} value={p.position_id}>
-                      {p.title}
-                    </option>
-                  ))}
+                  {positions
+                    .filter((p) => p.department_id === parseInt(selectedDept))
+                    .map((p) => (
+                      <option key={p.position_id} value={p.position_id}>
+                        {p.title}
+                      </option>
+                    ))}
                 </select>
 
                 <div className="flex justify-end gap-2 mt-2">
-                  <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 cursor-pointer">Cancel</button>
-                  <button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">Save</button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowAddModal(false);
+                      setSelectedDept("");
+                    }}
+                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                  >
+                    Save
+                  </button>
                 </div>
               </form>
             </div>
@@ -237,10 +257,16 @@ export default function Employees() {
                   />
                 ))}
 
-                {/* Dropdowns */}
+                {/* Department dropdown */}
                 <select
                   value={editData.department_id || ""}
-                  onChange={(e) => setEditData({ ...editData, department_id: e.target.value })}
+                  onChange={(e) =>
+                    setEditData({
+                      ...editData,
+                      department_id: parseInt(e.target.value),
+                      position_id: "",
+                    })
+                  }
                   className="w-full border rounded px-3 py-2"
                   required
                 >
@@ -252,23 +278,40 @@ export default function Employees() {
                   ))}
                 </select>
 
+                {/* Filtered Positions */}
                 <select
                   value={editData.position_id || ""}
-                  onChange={(e) => setEditData({ ...editData, position_id: e.target.value })}
-                  className="w-full border rounded px-3 py-2"
+                  onChange={(e) =>
+                    setEditData({ ...editData, position_id: parseInt(e.target.value) })
+                  }
+                  disabled={!editData.department_id}
+                  className="w-full border rounded px-3 py-2 disabled:bg-gray-100"
                   required
                 >
                   <option value="">Select Position</option>
-                  {positions.map((p) => (
-                    <option key={p.position_id} value={p.position_id}>
-                      {p.title}
-                    </option>
-                  ))}
+                  {positions
+                    .filter((p) => p.department_id === editData.department_id)
+                    .map((p) => (
+                      <option key={p.position_id} value={p.position_id}>
+                        {p.title}
+                      </option>
+                    ))}
                 </select>
 
                 <div className="flex justify-end gap-2 mt-2">
-                  <button type="button" onClick={() => setEditData(null)} className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 cursor-pointer">Cancel</button>
-                  <button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">Update</button>
+                  <button
+                    type="button"
+                    onClick={() => setEditData(null)}
+                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                  >
+                    Update
+                  </button>
                 </div>
               </form>
             </div>
