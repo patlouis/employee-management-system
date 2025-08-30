@@ -15,9 +15,9 @@ enhance productivity, and provide actionable insights.
 </p>
 
 ### Preview
-<img width="959" height="410" alt="image" src="https://github.com/user-attachments/assets/588e5e5e-9d0f-40ad-b865-51ab00a44ed1" />
-<img width="959" height="411" alt="image" src="https://github.com/user-attachments/assets/d0a1b5ec-d5a4-47f8-942b-dd5c50dda411" />
-<img width="959" height="409" alt="image" src="https://github.com/user-attachments/assets/b086c4ac-4187-4c81-8de3-bd3ab5642829" />
+<img width="959" height="408" alt="image" src="https://github.com/user-attachments/assets/e0cfcf43-30cc-4a5e-b6f3-4cf39467c4c8" />
+<img width="959" height="408" alt="image" src="https://github.com/user-attachments/assets/6df2a935-c50c-420f-9876-b88b39c1b2b5" />
+<img width="959" height="407" alt="image" src="https://github.com/user-attachments/assets/803b2545-6a73-4bf7-95e5-ebe073769b3f" />
 
 
 
