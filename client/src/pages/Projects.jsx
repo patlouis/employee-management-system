@@ -50,7 +50,9 @@ export default function Projects() {
     setProjects((prev) => prev.filter((p) => p.project_id !== project_id));
 
     try {
-      await axios.delete(`${API}/delete/${project_id}`);
+      await axios.delete(`${API}/delete/${project_id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
     } catch (err) {
       console.error(err);
       alert("Failed to delete project");
@@ -63,7 +65,9 @@ export default function Projects() {
     const formData = Object.fromEntries(new FormData(e.target));
 
     try {
-      await axios.post(`${API}/create`, formData);
+      await axios.post(`${API}/create`, formData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setShowAddModal(false);
       fetchProjects();
     } catch (err) {
@@ -76,7 +80,9 @@ export default function Projects() {
     e.preventDefault();
 
     try {
-      await axios.put(`${API}/update/${editData.project_id}`, editData);
+      await axios.put(`${API}/update/${editData.project_id}`, editData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setEditData(null);
       fetchProjects();
     } catch (err) {

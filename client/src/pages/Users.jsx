@@ -37,7 +37,9 @@ export default function Users() {
     if (!window.confirm("Delete this user?")) return;
 
     try {
-      await axios.delete(`${API}/delete/${user_id}`);
+      await axios.delete(`${API}/delete/${user_id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setUsers(users.filter((u) => u.user_id !== user_id));
     } catch (err) {
       console.error(err);
@@ -51,7 +53,9 @@ export default function Users() {
     const formData = Object.fromEntries(new FormData(e.target));
 
     try {
-      await axios.post(`${API}/create`, formData);
+      await axios.post(`${API}/create`, formData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setShowAddModal(false);
       fetchUsers();
     } catch (err) {
@@ -66,7 +70,9 @@ export default function Users() {
     const formData = { ...editData };
 
     try {
-      await axios.put(`${API}/update/${editData.user_id}`, formData);
+      await axios.put(`${API}/update/${editData.user_id}`, formData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setEditData(null);
       fetchUsers();
     } catch (err) {

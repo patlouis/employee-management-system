@@ -48,7 +48,9 @@ export default function Positions() {
   const handleDelete = async (position_id) => {
     if (!window.confirm("Delete this position?")) return;
     try {
-      await axios.delete(`${API}/delete/${position_id}`);
+      await axios.delete(`${API}/delete/${position_id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setPositions(positions.filter((p) => p.position_id !== position_id));
     } catch (err) {
       console.error(err);
@@ -60,7 +62,9 @@ export default function Positions() {
     e.preventDefault();
     const formData = Object.fromEntries(new FormData(e.target));
     try {
-      await axios.post(`${API}/create`, formData);
+      await axios.post(`${API}/create`, formData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setShowAddModal(false);
       fetchPositions();
     } catch (err) {
@@ -72,7 +76,9 @@ export default function Positions() {
   const handleEdit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${API}/update/${editData.position_id}`, editData);
+      await axios.put(`${API}/update/${editData.position_id}`, editData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setEditData(null);
       fetchPositions();
     } catch (err) {

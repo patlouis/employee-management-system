@@ -72,7 +72,9 @@ export default function Employees() {
   const handleDelete = async (employee_id) => {
     if (!window.confirm("Delete this employee?")) return;
     try {
-      await axios.delete(`${API}/delete/${employee_id}`);
+      await axios.delete(`${API}/delete/${employee_id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setEmployees(employees.filter((e) => e.employee_id !== employee_id));
     } catch (err) {
       console.error(err);
@@ -86,7 +88,9 @@ export default function Employees() {
     const formData = Object.fromEntries(new FormData(e.target));
 
     try {
-      await axios.post(`${API}/create`, formData);
+      await axios.post(`${API}/create`, formData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setShowAddModal(false);
       fetchEmployees();
     } catch (err) {
@@ -101,7 +105,9 @@ export default function Employees() {
     const formData = { ...editData };
 
     try {
-      await axios.put(`${API}/update/${editData.employee_id}`, formData);
+      await axios.put(`${API}/update/${editData.employee_id}`, formData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setEditData(null);
       fetchEmployees();
     } catch (err) {
@@ -205,8 +211,8 @@ export default function Employees() {
                 </select>
 
                 <div className="flex justify-end gap-2 mt-2">
-                  <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Cancel</button>
-                  <button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Save</button>
+                  <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 cursor-pointer">Cancel</button>
+                  <button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">Save</button>
                 </div>
               </form>
             </div>
@@ -261,8 +267,8 @@ export default function Employees() {
                 </select>
 
                 <div className="flex justify-end gap-2 mt-2">
-                  <button type="button" onClick={() => setEditData(null)} className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Cancel</button>
-                  <button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Update</button>
+                  <button type="button" onClick={() => setEditData(null)} className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 cursor-pointer">Cancel</button>
+                  <button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">Update</button>
                 </div>
               </form>
             </div>

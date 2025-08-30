@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
-app.use("/api/employees", employeeRoutes);
+app.use("/api/employees", verifyToken, employeeRoutes);
 app.use("/api/departments", verifyToken, departmentsRoutes);
 app.use("/api/positions", verifyToken, positionRoutes);
 app.use("/api/projects", verifyToken, projectRoutes);

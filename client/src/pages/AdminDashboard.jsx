@@ -11,7 +11,11 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function fetchEmployeeCount() {
       try {
-        const res = await axios.get("http://localhost:3000/api/employees/count");
+      const res = await axios.get("http://localhost:3000/api/employees/count", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
         setTotalEmployees(res.data.total);
       } catch (err) {
         console.error("Error fetching employee count:", err);

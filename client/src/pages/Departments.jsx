@@ -40,7 +40,9 @@ export default function Departments() {
     if (!window.confirm("Delete this department?")) return;
 
     try {
-      await axios.delete(`${API}/delete/${department_id}`);
+      await axios.delete(`${API}/delete/${department_id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setDepartments(departments.filter((d) => d.department_id !== department_id));
     } catch (err) {
       console.error(err);
@@ -54,7 +56,9 @@ export default function Departments() {
     const formData = Object.fromEntries(new FormData(e.target));
 
     try {
-      await axios.post(`${API}/create`, formData);
+      await axios.post(`${API}/create`, formData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setShowAddModal(false);
       fetchDepartments();
     } catch (err) {
@@ -68,7 +72,9 @@ export default function Departments() {
     e.preventDefault();
 
     try {
-      await axios.put(`${API}/update/${editData.department_id}`, editData);
+      await axios.put(`${API}/update/${editData.department_id}`, editData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setEditData(null);
       fetchDepartments();
     } catch (err) {
