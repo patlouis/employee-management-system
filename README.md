@@ -14,6 +14,14 @@ enhance productivity, and provide actionable insights.
   <img alt="Vite" src="https://img.shields.io/badge/-Vite-646cff?style=flat-square&logo=vite&logoColor=ffffff" />
 </p>
 
+### Admin
+
+- Manage Employees
+- Manage Departments
+- Manage Positions
+- Manage Projects
+- Manage Users
+
 ### Preview
 <img width="959" height="408" alt="image" src="https://github.com/user-attachments/assets/e0cfcf43-30cc-4a5e-b6f3-4cf39467c4c8" />
 <img width="959" height="408" alt="image" src="https://github.com/user-attachments/assets/6df2a935-c50c-420f-9876-b88b39c1b2b5" />
