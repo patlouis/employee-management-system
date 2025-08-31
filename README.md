@@ -14,7 +14,7 @@ enhance productivity, and provide actionable insights.
   <img alt="Vite" src="https://img.shields.io/badge/-Vite-646cff?style=flat-square&logo=vite&logoColor=ffffff" />
 </p>
 
-### Admin
+### Admin Features
 
 - Manage Employees
 - Manage Departments
