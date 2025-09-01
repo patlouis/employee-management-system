@@ -18,13 +18,27 @@ function validateFields(body, requiredFields) {
 
 // ================= Routes =================
 
-// Get all departments
+// Get all departments with optional sorting
 router.get("/", async (req, res) => {
   try {
     const db = await connectToDatabase();
+    let { sortBy = "department_id", order = "asc" } = req.query;
+
+    // ✅ Allow only safe columns
+    const allowedColumns = [
+      "department_id",
+      "name",
+      "description",
+      "created_at",
+      "updated_at",
+    ];
+    if (!allowedColumns.includes(sortBy)) sortBy = "department_id";
+    if (!["asc", "desc"].includes(order.toLowerCase())) order = "asc";
+
     const [rows] = await db.query(
-      "SELECT * FROM departments ORDER BY department_id ASC"
+      `SELECT * FROM departments ORDER BY ${sortBy} ${order.toUpperCase()}`
     );
+
     res.json(rows);
   } catch (err) {
     console.error("Error fetching departments:", err);

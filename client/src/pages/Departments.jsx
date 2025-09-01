@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Plus, Edit2, Trash2 } from "lucide-react";
+import { Plus, Edit2, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import DashboardLayout from "../components/DashboardLayout";
 
 const API = "http://localhost:3000/api/departments";
@@ -11,6 +11,10 @@ export default function Departments() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editData, setEditData] = useState(null);
 
+  // Sorting state (no default selection)
+  const [sortBy, setSortBy] = useState(null);
+  const [order, setOrder] = useState(null);
+
   const fields = [
     { name: "name", type: "text", placeholder: "Department Name" },
     { name: "description", type: "text", placeholder: "Description" },
@@ -18,12 +22,13 @@ export default function Departments() {
 
   useEffect(() => {
     fetchDepartments();
-  }, []);
+  }, [sortBy, order]);
 
   // Fetch all departments
   const fetchDepartments = async () => {
     try {
       const { data } = await axios.get(API, {
+        params: sortBy ? { sortBy, order } : {},
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setDepartments(data);
@@ -83,6 +88,27 @@ export default function Departments() {
     }
   };
 
+  // Handle sorting
+  const handleSort = (column) => {
+    if (sortBy === column) {
+      setOrder(order === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(column);
+      setOrder("asc");
+    }
+  };
+
+  const renderSortIcon = (column) => {
+    if (sortBy !== column) {
+      return <ArrowUp className="w-4 h-4 opacity-0 inline ml-1" />;
+    }
+    return order === "asc" ? (
+      <ArrowUp className="w-4 h-4 text-gray-600 inline ml-1" />
+    ) : (
+      <ArrowDown className="w-4 h-4 text-gray-600 inline ml-1" />
+    );
+  };
+
   return (
     <DashboardLayout activePage="Departments">
       <section className="p-4 md:p-6 space-y-6">
@@ -91,7 +117,7 @@ export default function Departments() {
           <h2 className="text-xl font-bold">Manage Departments</h2>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 cursor-pointer"
+            className="flex items-center gap-2 bg-gray-700 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-800 cursor-pointer"
           >
             <Plus className="w-4 h-4" /> Add Department
           </button>
@@ -105,9 +131,27 @@ export default function Departments() {
             <table className="min-w-full text-sm">
               <thead className="bg-gray-100">
                 <tr>
-                  {["ID", "Name", "Description", "Created", "Updated", "Actions"].map((h) => (
-                    <th key={h} className="px-4 py-2 text-left">
-                      {h}
+                  {[
+                    { key: "department_id", label: "ID" },
+                    { key: "name", label: "Name" },
+                    { key: "description", label: "Description" },
+                    { key: "created_at", label: "Created" },
+                    { key: "updated_at", label: "Updated" },
+                    { key: "actions", label: "Actions", sortable: false },
+                  ].map((h) => (
+                    <th
+                      key={h.key}
+                      className={`px-4 py-3 text-left font-bold ${
+                        h.sortable === false
+                          ? ""
+                          : "cursor-pointer hover:bg-gray-200 transition select-none"
+                      }`}
+                      onClick={() => h.sortable !== false && handleSort(h.key)}
+                    >
+                      <div className="flex items-center">
+                        {h.label}
+                        {h.sortable !== false && renderSortIcon(h.key)}
+                      </div>
                     </th>
                   ))}
                 </tr>
