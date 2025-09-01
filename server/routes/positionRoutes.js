@@ -22,12 +22,32 @@ function validateFields(body, requiredFields) {
 router.get("/", async (req, res) => {
   try {
     const db = await connectToDatabase();
-    const [rows] = await db.query(
-      `SELECT p.*, d.name AS department_name
-       FROM positions p
-       LEFT JOIN departments d ON p.department_id = d.department_id
-       ORDER BY p.position_id ASC`
-    );
+
+    let sql = `
+      SELECT p.*, d.name AS department_name
+      FROM positions p
+      LEFT JOIN departments d ON p.department_id = d.department_id
+    `;
+
+    // Sorting logic
+    const { sortBy, order } = req.query;
+    const validColumns = [
+      "position_id",
+      "title",
+      "description",
+      "department_name",
+      "created_at",
+      "updated_at",
+    ];
+
+    if (sortBy && validColumns.includes(sortBy)) {
+      const sortOrder = order === "desc" ? "DESC" : "ASC";
+      sql += ` ORDER BY ${sortBy} ${sortOrder}`;
+    } else {
+      sql += " ORDER BY position_id ASC";
+    }
+
+    const [rows] = await db.query(sql);
     res.json(rows);
   } catch (err) {
     console.error("Error fetching positions:", err);

@@ -22,15 +22,35 @@ function validateFields(body, requiredFields) {
 
 // ================= Routes =================
 
-// Get all projects with department name
+// Get all projects with optional sorting
 router.get("/", async (req, res) => {
   try {
     const db = await connectToDatabase();
-    const [rows] = await db.query(
-      `SELECT p.*, d.name AS department_name 
-       FROM projects p
-       LEFT JOIN departments d ON p.department_id = d.department_id`
-    );
+    let sql = `
+      SELECT p.*, d.name AS department_name 
+      FROM projects p
+      LEFT JOIN departments d ON p.department_id = d.department_id
+    `;
+
+    // Server-side sorting
+    const { sortBy, order } = req.query;
+    const validColumns = [
+      "project_id",
+      "title",
+      "department_name",
+      "description",
+      "status",
+      "created_at",
+      "updated_at",
+    ];
+    if (sortBy && validColumns.includes(sortBy)) {
+      const sortOrder = order === "desc" ? "DESC" : "ASC";
+      sql += ` ORDER BY ${sortBy} ${sortOrder}`;
+    } else {
+      sql += " ORDER BY project_id ASC"; // default sorting
+    }
+
+    const [rows] = await db.query(sql);
     res.json(rows);
   } catch (err) {
     console.error("Error fetching projects:", err);
@@ -46,7 +66,7 @@ router.get("/count", async (req, res) => {
     res.json({ total: rows[0].total });
   } catch (err) {
     console.error("Error fetching project count:", err);
-    res.status(500).json({ error: "Failed to fetch user count" });
+    res.status(500).json({ error: "Failed to fetch project count" });
   }
 });
 
