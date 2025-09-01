@@ -167,7 +167,7 @@ export default function Employees() {
                     { key: "name", label: "Name" },
                     { key: "email", label: "Email" },
                     { key: "phone", label: "Phone" },
-                    { key: "department", label: "Dept" },
+                    { key: "department", label: "Department" },
                     { key: "position", label: "Position" },
                     { key: "salary", label: "Salary" },
                     { key: "actions", label: "Actions", sortable: false },
