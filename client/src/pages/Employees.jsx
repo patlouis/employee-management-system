@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Plus, Edit2, Trash2 } from "lucide-react";
+import { Plus, Edit2, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import DashboardLayout from "../components/DashboardLayout";
 
 const API = "http://localhost:3000/api/employees";
@@ -15,18 +15,24 @@ export default function Employees() {
   const [editData, setEditData] = useState(null);
   const [selectedDept, setSelectedDept] = useState("");
 
+  const [sortBy, setSortBy] = useState(null);
+  const [order, setOrder] = useState("asc");
+
   const fields = ["first_name", "last_name", "email", "phone", "salary"];
 
   useEffect(() => {
     fetchEmployees();
     fetchDepartments();
     fetchPositions();
-  }, []);
+  }, [sortBy, order]);
 
   // Fetch employees
   const fetchEmployees = async () => {
+    setLoading(true);
     try {
+      const params = sortBy ? { sortBy, order } : {};
       const { data } = await axios.get(API, {
+        params,
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setEmployees(data);
@@ -113,6 +119,27 @@ export default function Employees() {
     }
   };
 
+  // Sorting
+  const handleSort = (column) => {
+    if (sortBy === column) {
+      setOrder(order === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(column);
+      setOrder("asc");
+    }
+  };
+
+  const renderSortIcon = (column) => {
+    if (sortBy !== column) {
+      return <ArrowUp className="w-4 h-4 opacity-0 inline ml-1" />;
+    }
+    return order === "asc" ? (
+      <ArrowUp className="w-4 h-4 text-gray-600 inline ml-1" />
+    ) : (
+      <ArrowDown className="w-4 h-4 text-gray-600 inline ml-1" />
+    );
+  };
+
   return (
     <DashboardLayout activePage="Employees">
       <section className="p-4 md:p-6 space-y-6">
@@ -135,8 +162,30 @@ export default function Employees() {
             <table className="min-w-full text-sm">
               <thead className="bg-gray-100">
                 <tr>
-                  {["ID", "Name", "Email", "Phone", "Dept", "Position", "Salary", "Actions"].map((h) => (
-                    <th key={h} className="px-4 py-2 text-left">{h}</th>
+                  {[
+                    { key: "employee_id", label: "ID" },
+                    { key: "name", label: "Name" },
+                    { key: "email", label: "Email" },
+                    { key: "phone", label: "Phone" },
+                    { key: "department", label: "Dept" },
+                    { key: "position", label: "Position" },
+                    { key: "salary", label: "Salary" },
+                    { key: "actions", label: "Actions", sortable: false },
+                  ].map((h) => (
+                    <th
+                      key={h.key}
+                      className={`px-4 py-2 text-left font-bold ${
+                        h.sortable === false
+                          ? ""
+                          : "cursor-pointer hover:bg-gray-200 transition select-none"
+                      }`}
+                      onClick={() => h.sortable !== false && handleSort(h.key)}
+                    >
+                      <div className="flex items-center">
+                        {h.label}
+                        {h.sortable !== false && renderSortIcon(h.key)}
+                      </div>
+                    </th>
                   ))}
                 </tr>
               </thead>
@@ -144,7 +193,7 @@ export default function Employees() {
                 {employees.map((e) => (
                   <tr key={e.employee_id} className="border-b last:border-b-0 hover:bg-gray-50">
                     <td className="px-4 py-2">{e.employee_id}</td>
-                    <td className="px-4 py-2">{e.first_name} {e.last_name}</td>
+                    <td className="px-4 py-2">{e.last_name}, {e.first_name}</td>
                     <td className="px-4 py-2">{e.email}</td>
                     <td className="px-4 py-2">{e.phone}</td>
                     <td className="px-4 py-2">{e.department}</td>
@@ -205,7 +254,12 @@ export default function Employees() {
                 </select>
 
                 {/* Filtered Positions */}
-                <select name="position_id" disabled={!selectedDept} className="w-full border rounded px-3 py-2 disabled:bg-gray-100" required>
+                <select
+                  name="position_id"
+                  disabled={!selectedDept}
+                  className="w-full border rounded px-3 py-2 disabled:bg-gray-100"
+                  required
+                >
                   <option value="">Select Position</option>
                   {positions
                     .filter((p) => p.department_id === parseInt(selectedDept))
@@ -251,7 +305,9 @@ export default function Employees() {
                     type={f === "email" ? "email" : "text"}
                     placeholder={f.replace("_", " ").toUpperCase()}
                     value={editData[f] || ""}
-                    onChange={(e) => setEditData({ ...editData, [f]: e.target.value })}
+                    onChange={(e) =>
+                      setEditData({ ...editData, [f]: e.target.value })
+                    }
                     className="w-full border rounded px-3 py-2"
                     required
                   />

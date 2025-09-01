@@ -141,7 +141,7 @@ export default function Departments() {
                   ].map((h) => (
                     <th
                       key={h.key}
-                      className={`px-4 py-3 text-left font-bold ${
+                      className={`px-4 py-2 text-left font-bold ${
                         h.sortable === false
                           ? ""
                           : "cursor-pointer hover:bg-gray-200 transition select-none"
