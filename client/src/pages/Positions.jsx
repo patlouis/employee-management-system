@@ -114,8 +114,8 @@ export default function Positions() {
                     "Title",
                     "Description",
                     "Department",
-                    "Created At",
-                    "Updated At",
+                    "Created",
+                    "Updated",
                     "Actions",
                   ].map((h) => (
                     <th key={h} className="px-4 py-2 text-left">
@@ -181,7 +181,6 @@ export default function Positions() {
                   placeholder="DESCRIPTION"
                   className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
                 />
-                {/* ✅ Dropdown for Department */}
                 <select
                   name="department_id"
                   className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"

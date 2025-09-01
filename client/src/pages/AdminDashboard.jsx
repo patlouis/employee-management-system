@@ -110,7 +110,6 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Welcome / Placeholder */}
         <div className="p-6 bg-white rounded-xl shadow">
           <h3 className="text-base font-semibold mb-2">Welcome to your dashboard</h3>
           <p className="text-sm text-gray-600">

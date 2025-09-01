@@ -13,7 +13,7 @@ export default function Employees() {
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [editData, setEditData] = useState(null);
-  const [selectedDept, setSelectedDept] = useState(""); // For Add modal
+  const [selectedDept, setSelectedDept] = useState("");
 
   const fields = ["first_name", "last_name", "email", "phone", "salary"];
 
